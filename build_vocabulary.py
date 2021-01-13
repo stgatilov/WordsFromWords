@@ -72,15 +72,11 @@ def get_words_from_xml_file(filename):
 
     xmlfile = open(filename, 'rb')
 
-    started = False
     for event, elem in ET.iterparse(xmlfile, events = ('start', 'end')):
         pos = elem.tag.find('}')
         tag = elem.tag[pos+1:]
 
-        if tag == 'body':
-            started = True
-
-        if started and event == 'start' and elem.text:
+        if event == 'start' and elem.text:
             text = elem.text.lower()
             arr = list(text)
             for i in range(len(arr)):
@@ -102,7 +98,7 @@ filename = 'input.txt'
 if len(sys.argv) >= 2:
     filename = sys.argv[1]
 
-dictionary = get_words_from_xml_file('input.txt')
+dictionary = get_words_from_xml_file(filename)
 
 dictlist = list(dictionary.items())
 dictlist.sort(key = lambda x: (x[1],x[0]))
