@@ -79,6 +79,7 @@ class WordsTableGui extends React.Component {
                   <WordGui text={cell} openedIds={this.props.opened[cell]} onClick={(i,ch) => {
                     extOnClick(cell, i, ch);
                   }}/>
+                  {'*'.repeat(this.props.stars[cell])}
                 </td>
               ))}
             </tr>
@@ -154,9 +155,18 @@ class MainGui extends React.Component {
     var mainWord = this.state.mainWord;
     var problem = this.props.data[mainWord];
     var mainOpened = Array(mainWord.length).fill(true);
+    var subwords = problem.map(x => x[0]);
+    var stars = {};
+    for (var x of problem) {
+      var prob = x[2], str = x[0];
+      var num = Math.floor(-Math.log10(prob) * 2) - 3;
+      if (num < 1) num = 1;
+      if (num > 7) num = 7;
+      stars[str] = num;
+    }
     return (
       <div>
-        <WordsTableGui words={problem.map(x => x[0])} opened={this.state.opened} onClick={(cell,i,ch) => {
+        <WordsTableGui words={subwords} stars={stars} opened={this.state.opened} onClick={(cell,i,ch) => {
           this.openLetter(cell, i);
         }}/>
         <WordGui text={mainWord} openedIds={mainOpened} greyedIds={this.state.inputUsed} onClick={(i,ch) => {
