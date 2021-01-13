@@ -141,19 +141,20 @@ struct SubwordsSearcher {
         for (int i = 0; i < haystack->size(); i++) {
             int ch = (*haystack)[i];
 
+            int next = node.next[ch];
+            if (used[i] || next < 0)
+                continue;
+
             bool dupe = false;
             for (int j = 0; j < i && !dupe; j++)
-                if (ch == (*haystack)[j])
+                if (ch == (*haystack)[j] && !used[j])
                     dupe = true;
             if (dupe)
                 continue;   //does not matter which letter X to take if there are many
 
-            int next = node.next[ch];
-            if (!used[i] && next >= 0) {
-                used[i] = true;
-                Rec(l + 1, next);
-                used[i] = false;
-            }
+            used[i] = true;
+            Rec(l + 1, next);
+            used[i] = false;
         }
     }
 
@@ -192,6 +193,8 @@ int main() {
 
         if (subIds.size() < MIN_NEEDLES)
             continue;
+
+        subIds.resize(std::remove(subIds.begin(), subIds.end(), i) - subIds.begin());
 
         results[i] = subIds;
 
