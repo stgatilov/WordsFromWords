@@ -72,11 +72,8 @@ def get_words_from_xml_file(filename):
 
     xmlfile = open(filename, 'rb')
 
-    for event, elem in ET.iterparse(xmlfile, events = ('start', 'end')):
-        pos = elem.tag.find('}')
-        tag = elem.tag[pos+1:]
-
-        if event == 'start' and elem.text:
+    for event, elem in ET.iterparse(xmlfile):
+        if elem.text:
             text = elem.text.lower()
             arr = list(text)
             for i in range(len(arr)):
@@ -91,6 +88,7 @@ def get_words_from_xml_file(filename):
                     if nword not in dictionary:
                         dictionary[nword] = 0
                     dictionary[nword] += 1
+        elem.clear()
 
     return dictionary
 

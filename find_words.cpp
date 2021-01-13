@@ -168,7 +168,9 @@ struct SubwordsSearcher {
 };
 
 static const int MIN_HAYSTACK_LEN = 8;
-static const int MIN_NEEDLES = 15;
+static const int MAX_HAYSTACK_LEN = 11;
+static const double MIN_GOOD_FREQUENCY = 1e-4;
+static const int MIN_GOOD_NEEDLES = 20;
 
 int main() {
     std::vector<Word> words = ReadWords("words.txt");
@@ -180,8 +182,17 @@ int main() {
     SubwordsSearcher searcher(trie);
     std::vector<int> subIds;
     std::string u8str;
+    int lastPercent = -1;
     for (int i = 0; i < words.size(); i++) {
+        int percent = i * 100 / words.size();
+        if (percent > lastPercent) {
+            printf("%d%% ", percent);
+            lastPercent = percent;
+        }
+
         if (words[i].str.size() < MIN_HAYSTACK_LEN)
+            continue;
+        if (words[i].str.size() > MAX_HAYSTACK_LEN)
             continue;
 
         searcher.Search(words[i].str, subIds);
@@ -191,7 +202,11 @@ int main() {
             return a < b;
         });
 
-        if (subIds.size() < MIN_NEEDLES)
+        int kGood = 0;
+        while (kGood < subIds.size() && words[subIds[kGood]].freq >= MIN_GOOD_FREQUENCY)
+            kGood++;
+
+        if (kGood < MIN_GOOD_NEEDLES)
             continue;
 
         subIds.resize(std::remove(subIds.begin(), subIds.end(), i) - subIds.begin());
