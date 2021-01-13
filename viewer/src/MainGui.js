@@ -6,7 +6,7 @@ class LetterGui extends React.Component {
   }
   render() {
     return (
-      <button id={this.props.id} onClick={this.props.onClick}>
+      <button id={this.props.id} disabled={this.props.greyed ? "disabled" : undefined} onClick={this.props.onClick}>
         {this.props.letter}
       </button>
     );
@@ -19,15 +19,16 @@ class WordGui extends React.Component {
   }
   render() {
     var letters = this.props.text.split('');
-    var closed = this.props.closed;
+    var openedIds = this.props.openedIds || [];
     var extOnClick = this.props.onClick;
+    var greyedIds = this.props.greyedIds || [];
     return (
       <table>
         <tbody>
           <tr>
             {letters.map((ch,i) => (
               <td key={i}>
-                <LetterGui letter={closed ? '?' : ch} onClick={() => {
+                <LetterGui letter={!openedIds[i] ? '?' : ch} greyed={greyedIds[i]} onClick={() => {
                   extOnClick(i,ch);
                 }}/>
               </td>
@@ -45,19 +46,29 @@ class WordsTableGui extends React.Component {
   }
   render() {
     var wordList = this.props.words;
+    wordList.sort((a,b) => {
+      if (a.length !== b.length)
+        return a.length > b.length ? -1 : 1;
+      if (a !== b)
+        return a < b ? -1 : 1;
+      return 0;
+    });
 
-    const COLSZ = 6;
-    var k = 0;
+    var COLN = 6;
+    var ROWN = Math.ceil(wordList.length / COLN);
+
     var wordTable = [];
-    for (var i = 0; i < 100 && k < wordList.length; i++) {
-      wordTable[i] = Array(COLSZ);
-      for (var j = 0; j < COLSZ; j++, k++) {
+    for (var i = 0; i < ROWN; i++) {
+      wordTable[i] = Array(COLN);
+      for (var j = 0; j < COLN; j++) {
         wordTable[i][j] = "";
+        var k = j * ROWN + i;
         if (k < wordList.length)
           wordTable[i][j] = wordList[k];
       }
     }
 
+    var extOnClick = this.props.onClick;
     return (
       <table>
         <tbody>
@@ -65,7 +76,9 @@ class WordsTableGui extends React.Component {
             <tr key={i}>
               {row.map((cell,j) => (
                 <td key={j}>
-                  <WordGui text={cell} closed={!this.props.opened[cell]} />
+                  <WordGui text={cell} openedIds={this.props.opened[cell]} onClick={(i,ch) => {
+                    extOnClick(cell, i, ch);
+                  }}/>
                 </td>
               ))}
             </tr>
@@ -82,6 +95,7 @@ class MainGui extends React.Component {
     this.state = {
       mainWord : MainGui.chooseRandomWord(props),
       inputWord : "",
+      inputUsed: [],
       opened : {},
       lastVerdict : "",
     };
@@ -97,6 +111,15 @@ class MainGui extends React.Component {
     this.setState(Object.assign({}, this.state, dict));
   }
 
+  addLetter(idx) {
+    if (this.state.inputUsed[idx])
+      return;
+    var newWord = this.state.inputWord + this.state.mainWord[idx];
+    var newUsed = this.state.inputUsed.slice();
+    newUsed[idx] = true;
+    this.updateState({inputWord: newWord, inputUsed: newUsed});
+  }
+
   checkWord() {
     var mainWord = this.state.mainWord;
     var problem = this.props.data[mainWord];
@@ -106,21 +129,38 @@ class MainGui extends React.Component {
     var lastVerdict = "такого слова нет...";
     for (var x of problem)
       if (x[0] === str) {
-        lastVerdict = (newOpened[str] ? "уже отгадано." : "ВЕРНО!")
-        newOpened[str] = true;
+        var openedCnt = 0;
+        if (str in newOpened)
+          for (var i = 0; i < str.length; i++)
+            openedCnt += !!newOpened[str][i];
+        lastVerdict = (openedCnt === str.length ? "уже отгадано." : "ВЕРНО!")
+        newOpened[str] = [];
+        for (var i = 0; i < str.length; i++)
+          newOpened[str][i] = true;
       }
 
-    this.updateState({opened: newOpened, inputWord: "", lastVerdict: lastVerdict});
+    this.updateState({opened: newOpened, inputWord: "", lastVerdict: lastVerdict, inputUsed: []});
+  }
+
+  openLetter(word, idx) {
+    var newOpened = Object.assign({}, this.state.opened);
+    if (!(word in newOpened))
+      newOpened[word] = [];
+    newOpened[word][idx] = true;
+    this.updateState({opened: newOpened});
   }
 
   render() {
     var mainWord = this.state.mainWord;
     var problem = this.props.data[mainWord];
+    var mainOpened = Array(mainWord.length).fill(true);
     return (
       <div>
-        <WordsTableGui words={problem.map(x => x[0])} opened={this.state.opened}/>
-        <WordGui text={mainWord} onClick={(i,ch) => {
-          this.updateState({inputWord: this.state.inputWord + ch})
+        <WordsTableGui words={problem.map(x => x[0])} opened={this.state.opened} onClick={(cell,i,ch) => {
+          this.openLetter(cell, i);
+        }}/>
+        <WordGui text={mainWord} openedIds={mainOpened} greyedIds={this.state.inputUsed} onClick={(i,ch) => {
+          this.addLetter(i);
         }}/>
         <div>&nbsp;{this.state.inputWord}</div>
         <button onClick={() => this.checkWord()}>
