@@ -1,7 +1,7 @@
 const path = require("path");
 
 module.exports = {
-  mode: "development",
+  devtool: 'eval-source-map',
   context: path.join(__dirname, "src"),
   entry: ["./main.js"],
   output: {
@@ -16,5 +16,10 @@ module.exports = {
         use: ["babel-loader"]
       }
     ]
+  },
+  devServer: {
+    contentBase: path.join(__dirname, "www"),
+    port: 3000,
+    historyApiFallback: true,
   }
 };
