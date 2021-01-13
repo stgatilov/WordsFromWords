@@ -4,3 +4,4 @@ syntax: regexp
 \.obj$
 \.exe$
 \.pyc$
+node_modules

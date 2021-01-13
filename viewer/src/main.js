@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Counter from "./Counter";
+import MainGui from "./MainGui";
 
 document.addEventListener("DOMContentLoaded", function() {
   ReactDOM.render(
-    React.createElement(Counter),
+    React.createElement(MainGui),
     document.getElementById("mount")
   );
 });

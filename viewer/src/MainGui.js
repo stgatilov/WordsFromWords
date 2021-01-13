@@ -3,7 +3,7 @@ import React from 'react';
 /**
  * A counter button: tap the button to increase the count.
  */
-class Counter extends React.Component {
+class MainGui extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -23,4 +23,4 @@ class Counter extends React.Component {
     );
   }
 }
-export default Counter;
+export default MainGui;
