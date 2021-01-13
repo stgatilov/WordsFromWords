@@ -1,3 +1,6 @@
 syntax: regexp
 \.txt$
 \.fb2$
+\.obj$
+\.exe$
+\.pyc$

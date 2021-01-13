@@ -1,5 +1,6 @@
 import pymorphy2
 import lxml.etree as ET
+import sys
 
 morph = pymorphy2.MorphAnalyzer()
 #x = morph.parse('бугогашеньки')
@@ -97,9 +98,11 @@ def get_words_from_xml_file(filename):
 
     return dictionary
 
-#import cProfile
-#cProfile.run("dictionary = get_words_from_xml_file('war_and_piece.fb2')")
-dictionary = get_words_from_xml_file('war_and_piece.fb2')
+filename = 'input.txt'
+if len(sys.argv) >= 2:
+    filename = sys.argv[1]
+
+dictionary = get_words_from_xml_file('input.txt')
 
 dictlist = list(dictionary.items())
 dictlist.sort(key = lambda x: (x[1],x[0]))
