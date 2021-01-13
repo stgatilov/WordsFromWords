@@ -27,7 +27,9 @@ class WordGui extends React.Component {
           <tr>
             {letters.map((ch,i) => (
               <td key={i}>
-                <LetterGui letter={closed ? '?' : ch} onClick={() => { extOnClick(i,ch); }}/>
+                <LetterGui letter={closed ? '?' : ch} onClick={() => {
+                  extOnClick(i,ch);
+                }}/>
               </td>
             ))}
           </tr>
@@ -53,7 +55,6 @@ class WordsTableGui extends React.Component {
         wordTable[i][j] = "";
         if (k < wordList.length)
           wordTable[i][j] = wordList[k];
-        k++;
       }
     }
 
@@ -64,7 +65,7 @@ class WordsTableGui extends React.Component {
             <tr key={i}>
               {row.map((cell,j) => (
                 <td key={j}>
-                  <WordGui text={cell}/>
+                  <WordGui text={cell} closed={!this.props.opened[cell]} />
                 </td>
               ))}
             </tr>
@@ -82,6 +83,7 @@ class MainGui extends React.Component {
       mainWord : MainGui.chooseRandomWord(props),
       inputWord : "",
       opened : {},
+      lastVerdict : "",
     };
   }
 
@@ -92,7 +94,23 @@ class MainGui extends React.Component {
   }
 
   updateState(dict) {
-    this.setState(...dict, ...this.state);
+    this.setState(Object.assign({}, this.state, dict));
+  }
+
+  checkWord() {
+    var mainWord = this.state.mainWord;
+    var problem = this.props.data[mainWord];
+    var str = this.state.inputWord;
+
+    var newOpened = Object.assign({}, this.state.opened);
+    var lastVerdict = "такого слова нет...";
+    for (var x of problem)
+      if (x[0] === str) {
+        lastVerdict = (newOpened[str] ? "уже отгадано." : "ВЕРНО!")
+        newOpened[str] = true;
+      }
+
+    this.updateState({opened: newOpened, inputWord: "", lastVerdict: lastVerdict});
   }
 
   render() {
@@ -100,12 +118,15 @@ class MainGui extends React.Component {
     var problem = this.props.data[mainWord];
     return (
       <div>
-        <LetterGui id={73} letter={'ф'}/>
-        <WordGui text={"фыва"} closed={true}/>
-
-        <WordsTableGui words={problem.map(x => x[0])}/>
-        <WordGui text={mainWord} onClick={(i,ch) => this.updateState({inputWord: this.state.inputWord + ch})}/>
-        <div>{this.state.inputWord}</div>
+        <WordsTableGui words={problem.map(x => x[0])} opened={this.state.opened}/>
+        <WordGui text={mainWord} onClick={(i,ch) => {
+          this.updateState({inputWord: this.state.inputWord + ch})
+        }}/>
+        <div>&nbsp;{this.state.inputWord}</div>
+        <button onClick={() => this.checkWord()}>
+          Проверить
+        </button>
+        <div>&nbsp;{this.state.lastVerdict}</div>
       </div>
     );
   }
