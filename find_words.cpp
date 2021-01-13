@@ -173,6 +173,7 @@ int main() {
     std::vector<Word> words = ReadWords("words.txt");
     std::vector<Node> trie = BuildTrie(words);
     
+    std::map<int, std::vector<int> > results;
     FILE *f = fopen("result.txt", "wb");
 
     SubwordsSearcher searcher(trie);
@@ -192,18 +193,37 @@ int main() {
         if (subIds.size() < MIN_NEEDLES)
             continue;
 
+        results[i] = subIds;
+
         ConvertStringToBytes(words[i].str, u8str);
         fprintf(f, "%s\n", u8str.c_str());
-
         for (int j = 0; j < subIds.size(); j++) {
             const Word &sw = words[subIds[j]];
             ConvertStringToBytes(sw.str, u8str);
             fprintf(f, "  %s %d %0.6lf\n", u8str.c_str(), sw.mult, sw.freq);
         }
-        
         fflush(f);
     }
 
+    fclose(f);
+
+    f = fopen("data.js", "wb");
+    fprintf(f, "data = {\n");
+    for (const auto &pKV : results) {
+        int i = pKV.first;
+        const auto &subIds = pKV.second;
+
+        ConvertStringToBytes(words[i].str, u8str);
+        fprintf(f, "  \"%s\": [\n", u8str.c_str());
+        for (int j = 0; j < subIds.size(); j++) {
+            const Word &sw = words[subIds[j]];
+            ConvertStringToBytes(sw.str, u8str);
+            fprintf(f, "    [\"%s\", %d, %0.6lf],\n", u8str.c_str(), sw.mult, sw.freq);
+        }
+        fprintf(f, "  ],\n");
+        fflush(f);
+    }
+    fprintf(f, "};\n");
     fclose(f);
 
     return 0;
