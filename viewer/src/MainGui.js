@@ -7,8 +7,11 @@ class LetterGui extends React.Component {
     super();
   }
   render() {
+    var classname = "letter";
+    if (this.props.shade)
+      classname += " shade";
     return (
-      <button id={this.props.id} className="letter" disabled={this.props.greyed ? "disabled" : undefined} onMouseDown={this.props.onClick}>
+      <button id={this.props.id} className={classname} disabled={this.props.disabled ? "disabled" : undefined} onMouseDown={this.props.onClick}>
         {this.props.letter}
       </button>
     );
@@ -24,13 +27,17 @@ class WordGui extends React.Component {
     var openedIds = this.props.openedIds || [];
     var extOnClick = this.props.onClick;
     var greyedIds = this.props.greyedIds || [];
+    var fullyOpened = true;
+    for (var i = 0; i < letters.length; i++)
+      if (!openedIds[i])
+        fullyOpened = false;
     return (
       <table>
         <tbody>
           <tr>
             {letters.map((ch,i) => (
               <td key={i}>
-                <LetterGui letter={!openedIds[i] ? '_' : ch} greyed={greyedIds[i]} onClick={() => {
+                <LetterGui letter={!openedIds[i] ? '_' : ch} disabled={greyedIds[i]} shade={fullyOpened} onClick={() => {
                   extOnClick(i,ch);
                 }}/>
               </td>

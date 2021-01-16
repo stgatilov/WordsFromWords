@@ -5,6 +5,9 @@ body {
 button.letter {
   padding: 0 5px
 }
+button.letter.shade {
+  background-color:aquamarine;
+}
 
 table.wordtable {
   border-spacing: 20px 0
