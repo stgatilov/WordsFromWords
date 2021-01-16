@@ -8,7 +8,7 @@ class LetterGui extends React.Component {
   }
   render() {
     return (
-      <button id={this.props.id} disabled={this.props.greyed ? "disabled" : undefined} onClick={this.props.onClick}>
+      <button id={this.props.id} disabled={this.props.greyed ? "disabled" : undefined} onMouseDown={this.props.onClick}>
         {this.props.letter}
       </button>
     );
