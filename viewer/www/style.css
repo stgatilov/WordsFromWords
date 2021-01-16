@@ -5,8 +5,11 @@ body {
 button.letter {
   padding: 0 5px
 }
-button.letter.shade {
+button.letter.shade1 {
   background-color:aquamarine;
+}
+button.letter.shade2 {
+  background-color: orange;
 }
 
 table.wordtable {

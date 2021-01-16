@@ -8,8 +8,8 @@ class LetterGui extends React.Component {
   }
   render() {
     var classname = "letter";
-    if (this.props.shade)
-      classname += " shade";
+    if (this.props.shade !== undefined)
+      classname += " shade" + this.props.shade;
     return (
       <button id={this.props.id} className={classname} disabled={this.props.disabled ? "disabled" : undefined} onMouseDown={this.props.onClick}>
         {this.props.letter}
@@ -27,17 +27,19 @@ class WordGui extends React.Component {
     var openedIds = this.props.openedIds || [];
     var extOnClick = this.props.onClick;
     var greyedIds = this.props.greyedIds || [];
-    var fullyOpened = true;
+    var shade = 1;
     for (var i = 0; i < letters.length; i++)
       if (!openedIds[i])
-        fullyOpened = false;
+        shade = 0;
+    if (this.props.special)
+      shade = 2;
     return (
       <table>
         <tbody>
           <tr>
             {letters.map((ch,i) => (
               <td key={i}>
-                <LetterGui letter={!openedIds[i] ? '_' : ch} disabled={greyedIds[i]} shade={fullyOpened} onClick={() => {
+                <LetterGui letter={!openedIds[i] ? '_' : ch} disabled={greyedIds[i]} shade={shade} onClick={() => {
                   extOnClick(i,ch);
                 }}/>
               </td>
@@ -85,7 +87,7 @@ class WordsTableGui extends React.Component {
             <tr key={i}>
               {row.map((cell,j) => (
                 <td key={j}>
-                  <WordGui text={cell} openedIds={this.props.opened[cell]} onClick={(i,ch) => {
+                  <WordGui text={cell} openedIds={this.props.opened[cell]} special={this.props.special===cell} onClick={(i,ch) => {
                     extOnClick(cell, i, ch);
                   }}/>
                   {'*'.repeat(this.props.stars[cell])}
@@ -107,8 +109,9 @@ class MainGui extends React.Component {
       inputWord : "",
       inputUsed: [],
       opened : {},
-      lastVerdict : "",
       extraRareGuessed: {},
+      lastVerdict : "",
+      lastGuess: undefined,
     };
   }
 
@@ -140,6 +143,7 @@ class MainGui extends React.Component {
     var newOpened = Object.assign({}, this.state.opened);
     var newRare = Object.assign({}, this.state.extraRareGuessed);
     var lastVerdict = "такого слова нет...";
+    var lastGuess = undefined;
     for (var str of stringSet) {
       for (var x of problem) {
         if (x[0] === str) {
@@ -148,6 +152,7 @@ class MainGui extends React.Component {
             for (var i = 0; i < str.length; i++)
               openedCnt += !!newOpened[str][i];
           lastVerdict = (openedCnt === str.length ? "уже отгадано." : "ВЕРНО!")
+          lastGuess = str;
           newOpened[str] = [];
           for (var i = 0; i < str.length; i++)
             newOpened[str][i] = true;
@@ -157,7 +162,7 @@ class MainGui extends React.Component {
       }
     }
 
-    this.updateState({opened: newOpened, inputWord: "", lastVerdict: lastVerdict, inputUsed: [], extraRareGuessed: newRare});
+    this.updateState({opened: newOpened, inputWord: "", lastVerdict: lastVerdict, lastGuess: lastGuess, inputUsed: [], extraRareGuessed: newRare});
   }
 
   openLetter(word, idx) {
@@ -195,7 +200,7 @@ class MainGui extends React.Component {
 
     return (
       <div>
-        <WordsTableGui words={problemMain.map(x => x[0])} stars={stars} opened={this.state.opened} onClick={(cell,i,ch) => {
+        <WordsTableGui words={problemMain.map(x => x[0])} stars={stars} opened={this.state.opened} special={this.state.lastGuess} onClick={(cell,i,ch) => {
           this.openLetter(cell, i);
         }}/>
         <WordGui text={mainWord} openedIds={mainOpened} greyedIds={this.state.inputUsed} onClick={(i,ch) => {
@@ -209,7 +214,7 @@ class MainGui extends React.Component {
           Открыть все
         </button>
         <div>&nbsp;{this.state.lastVerdict}</div>
-        <WordsTableGui words={problemRare.map(x => x[0])} stars={stars} opened={this.state.opened}/>
+        <WordsTableGui words={problemRare.map(x => x[0])} stars={stars} opened={this.state.opened} special={this.state.lastGuess}/>
       </div>
     );
   }
