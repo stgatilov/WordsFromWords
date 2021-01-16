@@ -41,7 +41,7 @@ def normalize(word):
     
 
 frequences = {}
-xmlfile = open('annot.opcorpora.no_ambig.xml', 'rb')
+xmlfile = open('annot.opcorpora.no_ambig.nonmod.xml', 'rb')
 for event, lem in ET.iterparse(xmlfile, tag = 'l'):
     lid = lem.attrib['id']
     if lid not in frequences:

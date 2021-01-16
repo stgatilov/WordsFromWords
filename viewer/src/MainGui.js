@@ -1,7 +1,5 @@
 import React from 'react';
 
-const GOOD_FREQ = 1e-4;
-
 class LetterGui extends React.Component {
   constructor() {
     super();
@@ -203,7 +201,7 @@ class MainGui extends React.Component {
           newOpened[str] = [];
           for (var i = 0; i < str.length; i++)
             newOpened[str][i] = true;
-          if (x[2] < GOOD_FREQ)
+          if (x[2] < this.props.MIN_GOOD_FREQUENCY)
             newRare[str] = true;
         }
       }
@@ -239,7 +237,7 @@ class MainGui extends React.Component {
       if (num < 1) num = 1;
       if (num > 7) num = 7;
       stars[str] = num;
-      if (prob >= GOOD_FREQ)
+      if (prob >= this.props.MIN_GOOD_FREQUENCY)
         problemMain.push(x);
       if (str in this.state.extraRareGuessed)
         problemRare.push(x);
