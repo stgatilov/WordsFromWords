@@ -116,8 +116,18 @@ class MainGui extends React.Component {
   }
 
   componentDidMount() {
+    document.addEventListener("keydown", (event) => {
+      if (event.which === 8) {
+        this.eraseLastLetter();
+        event.preventDefault();
+      }
+    });
     document.addEventListener("keypress", (event) => {
-      if (event.key === "Enter")
+      if (event.which === 8) {
+        event.preventDefault();
+        this.eraseLastLetter();
+      }
+      else if (event.key === "Enter")
         this.checkWord();
       else {
         var mainWord = this.state.mainWord;
@@ -150,6 +160,25 @@ class MainGui extends React.Component {
     var newUsed = this.state.inputUsed.slice();
     newUsed[idx] = true;
     this.updateState({inputWord: newWord, inputUsed: newUsed});
+  }
+
+  eraseLastLetter() {
+    if (this.state.inputWord.length === 0)
+      return false;
+
+    var mainWord = this.state.mainWord;
+    var newWord = this.state.inputWord;
+    var ch = newWord[newWord.length - 1];
+    newWord = newWord.slice(0, newWord.length - 1);
+    var newInputUsed = this.state.inputUsed.slice();
+    for (var i = mainWord.length - 1; i >= 0; i--)
+      if (mainWord[i] === ch && newInputUsed[i]) {
+        newInputUsed[i] = false;
+        break;
+      }
+
+    this.updateState({inputWord: newWord, inputUsed: newInputUsed});
+    return true;
   }
 
   checkWord(stringSet) {
