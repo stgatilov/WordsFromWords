@@ -1,5 +1,7 @@
 import React from 'react';
 
+const GOOD_FREQ = 1e-4;
+
 class LetterGui extends React.Component {
   constructor() {
     super();
@@ -99,6 +101,7 @@ class MainGui extends React.Component {
       inputUsed: [],
       opened : {},
       lastVerdict : "",
+      extraRareGuessed: {},
     };
   }
 
@@ -128,6 +131,7 @@ class MainGui extends React.Component {
 
     var newOpened = Object.assign({}, this.state.opened);
     var lastVerdict = "такого слова нет...";
+    var newRare = Object.assign({}, this.state.extraRareGuessed);
     for (var x of problem)
       if (x[0] === str) {
         var openedCnt = 0;
@@ -138,9 +142,11 @@ class MainGui extends React.Component {
         newOpened[str] = [];
         for (var i = 0; i < str.length; i++)
           newOpened[str][i] = true;
+        if (x[2] < GOOD_FREQ)
+          newRare[str] = true;
       }
 
-    this.updateState({opened: newOpened, inputWord: "", lastVerdict: lastVerdict, inputUsed: []});
+    this.updateState({opened: newOpened, inputWord: "", lastVerdict: lastVerdict, inputUsed: [], extraRareGuessed: newRare});
   }
 
   openLetter(word, idx) {
@@ -155,18 +161,24 @@ class MainGui extends React.Component {
     var mainWord = this.state.mainWord;
     var problem = this.props.data[mainWord];
     var mainOpened = Array(mainWord.length).fill(true);
-    var subwords = problem.map(x => x[0]);
+
     var stars = {};
+    var problemMain = [], problemRare = [];
     for (var x of problem) {
       var prob = x[2], str = x[0];
       var num = Math.floor(-Math.log10(prob) * 2) - 3;
       if (num < 1) num = 1;
       if (num > 7) num = 7;
       stars[str] = num;
+      if (prob >= GOOD_FREQ)
+        problemMain.push(x);
+      if (str in this.state.extraRareGuessed)
+        problemRare.push(x);
     }
+
     return (
       <div>
-        <WordsTableGui words={subwords} stars={stars} opened={this.state.opened} onClick={(cell,i,ch) => {
+        <WordsTableGui words={problemMain.map(x => x[0])} stars={stars} opened={this.state.opened} onClick={(cell,i,ch) => {
           this.openLetter(cell, i);
         }}/>
         <WordGui text={mainWord} openedIds={mainOpened} greyedIds={this.state.inputUsed} onClick={(i,ch) => {
@@ -177,6 +189,7 @@ class MainGui extends React.Component {
           Проверить
         </button>
         <div>&nbsp;{this.state.lastVerdict}</div>
+        <WordsTableGui words={problemRare.map(x => x[0])} stars={stars} opened={this.state.opened}/>
       </div>
     );
   }

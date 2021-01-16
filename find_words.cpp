@@ -167,10 +167,10 @@ struct SubwordsSearcher {
     }
 };
 
-static const int MIN_HAYSTACK_LEN = 8;
-static const int MAX_HAYSTACK_LEN = 11;
+static const int MIN_HAYSTACK_LEN = 5;
+static const int MAX_HAYSTACK_LEN = 8;
 static const double MIN_GOOD_FREQUENCY = 1e-4;
-static const int MIN_GOOD_NEEDLES = 20;
+static const int MIN_GOOD_NEEDLES = 15;
 
 int main() {
     std::vector<Word> words = ReadWords("words.txt");
