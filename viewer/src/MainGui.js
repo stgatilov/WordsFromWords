@@ -115,6 +115,24 @@ class MainGui extends React.Component {
     };
   }
 
+  componentDidMount() {
+    document.addEventListener("keypress", (event) => {
+      if (event.key === "Enter")
+        this.checkWord();
+      else {
+        var mainWord = this.state.mainWord;
+        for (var i = 0; i < mainWord.length; i++) {
+          if (this.state.inputUsed[i])
+            continue;
+          if (mainWord[i] === event.key) {
+            this.addLetter(i);
+            return;
+          }
+        }
+      }
+    });
+  }
+
   static chooseRandomWord(props) {
     var allWords = Object.keys(props.data);
     var idx = Math.floor(Math.random() * allWords.length);
