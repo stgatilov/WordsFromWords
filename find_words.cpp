@@ -167,10 +167,11 @@ struct SubwordsSearcher {
     }
 };
 
-static const int MIN_HAYSTACK_LEN = 5;
-static const int MAX_HAYSTACK_LEN = 8;
+static const int MIN_HAYSTACK_LEN = 7;
+static const int MAX_HAYSTACK_LEN = 10;
 static const double MIN_GOOD_FREQUENCY = 1e-4;
 static const int MIN_GOOD_NEEDLES = 15;
+static const int MAX_GOOD_NEEDLES = 30;
 
 int main() {
     std::vector<Word> words = ReadWords("words.txt");
@@ -206,7 +207,7 @@ int main() {
         while (kGood < subIds.size() && words[subIds[kGood]].freq >= MIN_GOOD_FREQUENCY)
             kGood++;
 
-        if (kGood < MIN_GOOD_NEEDLES)
+        if (kGood < MIN_GOOD_NEEDLES || kGood > MAX_GOOD_NEEDLES)
             continue;
 
         subIds.resize(std::remove(subIds.begin(), subIds.end(), i) - subIds.begin());

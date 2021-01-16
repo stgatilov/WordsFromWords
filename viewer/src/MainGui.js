@@ -30,7 +30,7 @@ class WordGui extends React.Component {
           <tr>
             {letters.map((ch,i) => (
               <td key={i}>
-                <LetterGui letter={!openedIds[i] ? '?' : ch} greyed={greyedIds[i]} onClick={() => {
+                <LetterGui letter={!openedIds[i] ? '_' : ch} greyed={greyedIds[i]} onClick={() => {
                   extOnClick(i,ch);
                 }}/>
               </td>
@@ -124,27 +124,31 @@ class MainGui extends React.Component {
     this.updateState({inputWord: newWord, inputUsed: newUsed});
   }
 
-  checkWord() {
+  checkWord(stringSet) {
     var mainWord = this.state.mainWord;
     var problem = this.props.data[mainWord];
-    var str = this.state.inputWord;
+    if (stringSet === undefined)
+      stringSet = [this.state.inputWord];
 
     var newOpened = Object.assign({}, this.state.opened);
-    var lastVerdict = "такого слова нет...";
     var newRare = Object.assign({}, this.state.extraRareGuessed);
-    for (var x of problem)
-      if (x[0] === str) {
-        var openedCnt = 0;
-        if (str in newOpened)
+    var lastVerdict = "такого слова нет...";
+    for (var str of stringSet) {
+      for (var x of problem) {
+        if (x[0] === str) {
+          var openedCnt = 0;
+          if (str in newOpened)
+            for (var i = 0; i < str.length; i++)
+              openedCnt += !!newOpened[str][i];
+          lastVerdict = (openedCnt === str.length ? "уже отгадано." : "ВЕРНО!")
+          newOpened[str] = [];
           for (var i = 0; i < str.length; i++)
-            openedCnt += !!newOpened[str][i];
-        lastVerdict = (openedCnt === str.length ? "уже отгадано." : "ВЕРНО!")
-        newOpened[str] = [];
-        for (var i = 0; i < str.length; i++)
-          newOpened[str][i] = true;
-        if (x[2] < GOOD_FREQ)
-          newRare[str] = true;
+            newOpened[str][i] = true;
+          if (x[2] < GOOD_FREQ)
+            newRare[str] = true;
+        }
       }
+    }
 
     this.updateState({opened: newOpened, inputWord: "", lastVerdict: lastVerdict, inputUsed: [], extraRareGuessed: newRare});
   }
@@ -155,6 +159,12 @@ class MainGui extends React.Component {
       newOpened[word] = [];
     newOpened[word][idx] = true;
     this.updateState({opened: newOpened});
+  }
+
+  openAll() {
+    var mainWord = this.state.mainWord;
+    var problem = this.props.data[mainWord];
+    this.checkWord(problem.map(x => x[0]));
   }
 
   render() {
@@ -187,6 +197,9 @@ class MainGui extends React.Component {
         <div>&nbsp;{this.state.inputWord}</div>
         <button onClick={() => this.checkWord()}>
           Проверить
+        </button>
+        <button onClick={() => this.openAll()}>
+          Открыть все
         </button>
         <div>&nbsp;{this.state.lastVerdict}</div>
         <WordsTableGui words={problemRare.map(x => x[0])} stars={stars} opened={this.state.opened}/>
