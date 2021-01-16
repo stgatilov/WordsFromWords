@@ -169,7 +169,7 @@ struct SubwordsSearcher {
 
 static const int MIN_HAYSTACK_LEN = 7;
 static const int MAX_HAYSTACK_LEN = 10;
-static const double MIN_GOOD_FREQUENCY = 4e-5;
+static const double MIN_GOOD_FREQUENCY = 1e-5;
 static const int MIN_GOOD_NEEDLES = 15;
 static const int MAX_GOOD_NEEDLES = 30;
 
