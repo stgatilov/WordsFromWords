@@ -8,7 +8,7 @@ class LetterGui extends React.Component {
   }
   render() {
     return (
-      <button id={this.props.id} class="letter" disabled={this.props.greyed ? "disabled" : undefined} onMouseDown={this.props.onClick}>
+      <button id={this.props.id} className="letter" disabled={this.props.greyed ? "disabled" : undefined} onMouseDown={this.props.onClick}>
         {this.props.letter}
       </button>
     );
@@ -72,7 +72,7 @@ class WordsTableGui extends React.Component {
 
     var extOnClick = this.props.onClick;
     return (
-      <table class="wordtable">
+      <table className="wordtable">
         <tbody>
           {wordTable.map((row,i) => (
             <tr key={i}>
