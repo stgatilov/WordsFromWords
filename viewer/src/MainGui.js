@@ -63,7 +63,7 @@ class WordsTableGui extends React.Component {
       return 0;
     });
 
-    var COLN = 6;
+    var COLN = 5;
     var ROWN = Math.ceil(wordList.length / COLN);
 
     var wordTable = [];
@@ -251,14 +251,14 @@ class MainGui extends React.Component {
         <WordGui text={mainWord} openedIds={mainOpened} greyedIds={this.state.inputUsed} onClick={(i,ch) => {
           this.addLetter(i);
         }}/>
-        <div>&nbsp;{this.state.inputWord}</div>
+        <div className="wordinput">&nbsp;{this.state.inputWord}</div>
         <button onClick={() => this.checkWord()}>
           Проверить
         </button>
         <button onClick={() => this.openAll()}>
           Открыть все
         </button>
-        <div>&nbsp;{this.state.lastVerdict}</div>
+        <div className="verdict">&nbsp;{this.state.lastVerdict}</div>
         <WordsTableGui words={problemRare.map(x => x[0])} stars={stars} opened={this.state.opened} special={this.state.lastGuess}/>
       </div>
     );

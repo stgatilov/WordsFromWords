@@ -1,9 +1,16 @@
+body,button {
+  font-size: 100%;
+}
+.wordinput,.verdict {
+  font-size: 130%;
+}
+
 body {
   background-color: lightblue;
 }
 
 button.letter {
-  padding: 0 5px
+  padding: 0 5px;
 }
 button.letter.shade1 {
   background-color:aquamarine;
@@ -13,5 +20,5 @@ button.letter.shade2 {
 }
 
 table.wordtable {
-  border-spacing: 20px 0
+  border-spacing: 20px 0;
 }
