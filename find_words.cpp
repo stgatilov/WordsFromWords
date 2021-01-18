@@ -234,7 +234,7 @@ int main() {
     if (jsonRes.size() > ANSWER_NUMBER_LIMIT)
         jsonRes.resize(ANSWER_NUMBER_LIMIT);
 
-    f = fopen("data.js", "wb");
+    f = fopen("viewer/www/data.js", "wb");
     fprintf(f, "data = {\n");
     for (const auto &pKV : jsonRes) {
         int i = pKV.first;
