@@ -178,7 +178,7 @@ int main() {
     std::vector<Word> words = ReadWords("words.txt");
     std::vector<Node> trie = BuildTrie(words);
     
-    std::map<int, std::vector<int> > results;
+    std::map<int, std::vector<int>> results;
     FILE *f = fopen("result.txt", "wb");
 
     SubwordsSearcher searcher(trie);
