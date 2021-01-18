@@ -22,3 +22,21 @@ button.letter.shade2 {
 table.wordtable {
   border-spacing: 20px 0;
 }
+table.wordtable > tbody > tr > td {
+  font-size: 40%;
+}
+
+#world {
+  display: inline-block;
+}
+#controlarea {
+  text-align: center;
+}
+#controlarea button.letter {
+  font-size: 150%;
+  padding: 0 10px;
+  margin: 7px 3px;
+}
+#controlarea > table {
+  margin: auto;
+}

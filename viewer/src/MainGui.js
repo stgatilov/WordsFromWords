@@ -88,7 +88,7 @@ class WordsTableGui extends React.Component {
                   <WordGui text={cell} openedIds={this.props.opened[cell]} special={this.props.special===cell} onClick={(i,ch) => {
                     extOnClick(cell, i, ch);
                   }}/>
-                  {'*'.repeat(this.props.stars[cell])}
+                  {' ' + '✱'.repeat(this.props.stars[cell])}
                 </td>
               ))}
             </tr>
@@ -244,21 +244,29 @@ class MainGui extends React.Component {
     }
 
     return (
-      <div>
+      <div id="world">
         <WordsTableGui words={problemMain.map(x => x[0])} stars={stars} opened={this.state.opened} special={this.state.lastGuess} onClick={(cell,i,ch) => {
           this.openLetter(cell, i);
         }}/>
-        <WordGui text={mainWord} openedIds={mainOpened} greyedIds={this.state.inputUsed} onClick={(i,ch) => {
-          this.addLetter(i);
-        }}/>
-        <div className="wordinput">&nbsp;{this.state.inputWord}</div>
-        <button onClick={() => this.checkWord()}>
-          Проверить
-        </button>
-        <button onClick={() => this.openAll()}>
-          Открыть все
-        </button>
-        <div className="verdict">&nbsp;{this.state.lastVerdict}</div>
+
+        <div id="controlarea">
+          <WordGui text={mainWord} openedIds={mainOpened} greyedIds={this.state.inputUsed} onClick={(i,ch) => {
+            this.addLetter(i);
+          }}/>
+
+          <div className="wordinput">&nbsp;{this.state.inputWord}</div>
+
+          <button onClick={() => this.checkWord()}>
+            Проверить
+          </button>
+
+          <button onClick={() => this.openAll()}>
+            Открыть все
+          </button>
+
+          <div className="verdict">&nbsp;{this.state.lastVerdict}</div>
+        </div>
+
         <WordsTableGui words={problemRare.map(x => x[0])} stars={stars} opened={this.state.opened} special={this.state.lastGuess}/>
       </div>
     );
