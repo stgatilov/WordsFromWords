@@ -25,7 +25,10 @@ blacklisted_gramems = [
     'Init',
     'Hypo',
 ]
-
+# hack to remove some words from "good" list
+words_not_good = [
+    'сит',
+]
 
 def normalize(word):
     res = []
@@ -86,6 +89,8 @@ for event, lemma in ET.iterparse(xmlfile, tag = 'lemma'):
     all_freq = 0
     if lid in frequences:
         all_freq = frequences[lid]
+    if normal_text in words_not_good:
+        all_freq = 0
     dictionary[normal_text] = all_freq
     lemma.clear()
 
