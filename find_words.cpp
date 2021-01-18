@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <string.h>
 #include <algorithm>
 
 #define Ef(format, ...) fprintf(stderr, format, __VA_ARGS__);
