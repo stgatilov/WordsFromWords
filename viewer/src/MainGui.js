@@ -224,6 +224,18 @@ class MainGui extends React.Component {
     this.checkWord(problem.map(x => x[0]));
   }
 
+  nextProblem() {
+    this.updateState({
+      mainWord : MainGui.chooseRandomWord(this.props),
+      inputWord : "",
+      inputUsed: [],
+      opened : {},
+      extraRareGuessed: {},
+      lastVerdict : "",
+      lastGuess: undefined,
+    });
+  }
+
   render() {
     var mainWord = this.state.mainWord;
     var problem = this.props.data[mainWord];
@@ -249,7 +261,7 @@ class MainGui extends React.Component {
           this.openLetter(cell, i);
         }}/>
 
-        <div id="controlarea">
+        <div className="controlarea">
           <WordGui text={mainWord} openedIds={mainOpened} greyedIds={this.state.inputUsed} onClick={(i,ch) => {
             this.addLetter(i);
           }}/>
@@ -259,15 +271,24 @@ class MainGui extends React.Component {
           <button onClick={() => this.checkWord()}>
             Проверить
           </button>
-
-          <button onClick={() => this.openAll()}>
-            Открыть все
+          <button onClick={() => this.eraseLastLetter()}>
+            Стереть
           </button>
 
           <div className="verdict">&nbsp;{this.state.lastVerdict}</div>
         </div>
 
         <WordsTableGui words={problemRare.map(x => x[0])} stars={stars} opened={this.state.opened} special={this.state.lastGuess}/>
+
+        <div className="controlarea">
+          <button onClick={() => this.openAll()}>
+            Открыть все
+          </button>
+          <button onClick={() => this.nextProblem()}>
+            Следующее слово
+          </button>
+        </div>
+
       </div>
     );
   }

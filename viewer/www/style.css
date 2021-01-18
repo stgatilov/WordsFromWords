@@ -29,14 +29,14 @@ table.wordtable > tbody > tr > td {
 #world {
   display: inline-block;
 }
-#controlarea {
+.controlarea {
   text-align: center;
 }
-#controlarea button.letter {
+.controlarea button.letter {
   font-size: 150%;
   padding: 0 10px;
   margin: 7px 3px;
 }
-#controlarea > table {
+.controlarea > table {
   margin: auto;
 }
