@@ -172,6 +172,7 @@ static const int MAX_HAYSTACK_LEN = 10;
 static const double MIN_GOOD_FREQUENCY = 3e-5;
 static const int MIN_GOOD_NEEDLES = 15;
 static const int MAX_GOOD_NEEDLES = 30;
+static const int ANSWER_NUMBER_LIMIT = 1000;
 
 int main() {
     std::vector<Word> words = ReadWords("words.txt");
@@ -226,9 +227,16 @@ int main() {
 
     fclose(f);
 
+    fprintf(stderr, "\nFound %d cases\n", int(results.size()));
+    std::vector<std::pair<int, std::vector<int>>> jsonRes(results.begin(), results.end());
+    srand(666);
+    std::random_shuffle(jsonRes.begin(), jsonRes.end());
+    if (jsonRes.size() > ANSWER_NUMBER_LIMIT)
+        jsonRes.resize(ANSWER_NUMBER_LIMIT);
+
     f = fopen("data.js", "wb");
     fprintf(f, "data = {\n");
-    for (const auto &pKV : results) {
+    for (const auto &pKV : jsonRes) {
         int i = pKV.first;
         const auto &subIds = pKV.second;
 
