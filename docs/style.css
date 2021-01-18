@@ -1,0 +1,42 @@
+body,button {
+  font-size: 100%;
+}
+.wordinput,.verdict {
+  font-size: 130%;
+}
+
+body {
+  background-color: lightblue;
+}
+
+button.letter {
+  padding: 0 5px;
+}
+button.letter.shade1 {
+  background-color:aquamarine;
+}
+button.letter.shade2 {
+  background-color: orange;
+}
+
+table.wordtable {
+  border-spacing: 20px 0;
+}
+table.wordtable > tbody > tr > td {
+  font-size: 40%;
+}
+
+#world {
+  display: inline-block;
+}
+.controlarea {
+  text-align: center;
+}
+.controlarea button.letter {
+  font-size: 150%;
+  padding: 0 10px;
+  margin: 7px 3px;
+}
+.controlarea > table {
+  margin: auto;
+}
